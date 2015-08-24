@@ -69,8 +69,8 @@ else
     echo "---------------$LOCATION---------------"
   fi
 fi
-FOLDER=${LOCATION##*/}
 echo -n "Folder = $LOCATION"
+FOLDER=${LOCATION##*/}
 #
 if [[ ! -d $LOCATION ]];
 then
