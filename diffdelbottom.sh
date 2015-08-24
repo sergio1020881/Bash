@@ -1,6 +1,6 @@
 #!/bin/bash
-#author: sergio santos
-#sergio1020881@gmail.com
+#author: sergio manuel salazar dos santos
+#sergio.salazar.santos@gmail.com
 #mobile: 916919898
 #CVS: $Header$
 shopt -s -o nounset
@@ -12,6 +12,7 @@ then
   printf "$SCRIPT please run this script with the BASH shell"
   exit 192
 fi
+echo "--------------------------------------------------------------------------------"
 #preset
 IFS_OLD=$IFS
 #IFS metacharacter list.
@@ -20,79 +21,114 @@ IFS=$'\0'
 #function exit on interrupt catch
 control_c()
 {
-  timestamp=$(date +%Y:%m:%d-%H:%M:%S)
+  TIMESTAMP=$(date +%Y:%m:%d-%H:%M:%S)
   #troubleshooting
-  rm $diffdelocation/.diffdelog.txt -v
+  rm $LOCATION/.diffdelog.txt -v
   #
   echo "Stopped due to Interrupt «ctr-c»"
-  echo "$timestamp stopped" >> "$rmlogfile"
-  chmod 444 "$rmlogfile" -v
+  echo "$TIMESTAMP stopped" >> "$LOGFILE"
+  chmod 444 "$LOGFILE" -v
   #Cleanup
   IFS=$IFS_OLD
   exit #all is well
 }
 #The main
-echo "INICIO"
-timestamp=$(date +%Y:%m:%d-%H:%M:%S)
+#GLOBAL VAR
+DIRVAR=NULL
+TERMDIR=NULL
+TIMESTAMP=$(date +%Y:%m:%d-%H:%M:%S)
+echo "INICIO $TIMESTAMP"
 #filter
 if (( $# < 3 || $# > 3 )); 
 then
-  echo "Usage: $0 location typefile depth"
+  echo "Usage: $0 FOLDER FILE depth"
   exit
+else
+  echo "Entry: $0 $1 $2 $3"
 fi
+#it is always better to make a program that only does the tasks predefined, those not recognised
+#is to be ignored, this way there is no gaps for errors, only what is expected, otherwise ignored.
+#One way is to compare inputs with the ones predefined, only accept and react to those that are #defined.
+#Pre-requisites for an input to be accepted, it has to go threw a filtering mode.
 #example: diffdel.sh . txt 3
 #example: diffdel.sh ~ pdf 6
-diffdelocation="$1";
-#
-if [[ ! -d $diffdelocation ]];
+#INIC VAR
+DIRVAR="$1"
+TERMDIR=$(pwd)
+if [[ $DIRVAR == . ]];
 then
-  echo "Dir «$diffdelocation» does not exist!"
+  LOCATION=$TERMDIR
+  echo "---------------$LOCATION---------------"
+else
+  if [[ $DIRVAR == .. ]];
+  then
+    LOCATION=${TERMDIR%/*}
+    echo "---------------$LOCATION---------------"
+  else
+    LOCATION=$DIRVAR
+    echo "---------------$LOCATION---------------"
+  fi
+fi
+FOLDER=${LOCATION##*/}
+echo -n "Folder = $LOCATION"
+#
+if [[ ! -d $LOCATION ]];
+then
+  echo " Folder «$LOCATION» does not exist!"
   exit
+else
+  echo " Confirmed «$FOLDER»"
 fi
 #
-extension="$2"
-echo "Typefile = $extension"
+EXTVAR=$2
+extension=${EXTVAR##*.}
+#echo "Typefile = $extension"
+echo -n "Extension = $EXTVAR"
+echo " Confirmed «$extension»"
 #
-diffdeldepth="$3";
+DEPTHVAR="$3";
+echo -n "Depth = $DEPTHVAR"
 #
-if [[ ! $diffdeldepth =~ ^[0-9]$ ]];
+if [[ ! $DEPTHVAR =~ ^[0-9]$ ]];
 then
-  echo "Arg 2 must be between 0 and 9!"
+  echo " Arg 2 must be between 0 and 9!"
   exit
+else
+  echo " Confirmed «$DEPTHVAR»"
 fi
-#
-touch $diffdelocation/.diffdelog.txt
-chmod 644 $diffdelocation/.diffdelog.txt -v
-rmlogfolder="$diffdelocation/removelog"
-rmlogfile="$rmlogfolder/remove_$extension.txt"
+#Temporary working file of bash
+TEMPLOGFILE="$LOCATION/.diffdelog.txt"
+touch $TEMPLOGFILE
+chmod 664 $TEMPLOGFILE -v
+LOGFOLDER="$HOME/REMOVELOG"
+LOGFILE="$LOGFOLDER/remove_$extension.txt"
 #testes
-if [[ -d $rmlogfolder ]];
+if [[ -d $LOGFOLDER ]];
 then
-  echo "Pasta «$rmlogfolder» updated"
+  echo "Updating «$LOGFOLDER»"
 else
-  mkdir $rmlogfolder -v
+  echo "Creating «$LOGFOLDER»"
+  mkdir $LOGFOLDER -v
 fi
-if [[ -f $rmlogfile ]];
+if [[ -f $LOGFILE ]];
 then
-  echo "Ficheiro «$rmlogfile» updated"
-  chmod 777 $rmlogfile -v
-  echo "$timestamp remove $extension files:" >> $rmlogfile
-  echo "location: $diffdelocation" >> $rmlogfile
+  echo "Updating «$LOGFILE»"
+  chmod 664 $LOGFILE -v
 else
-  echo "Ficheiro «$rmlogfile» created"
-  touch "$rmlogfile"
-  chmod 777 $rmlogfile -v
-  echo "$timestamp remove $extension files:" > $rmlogfile
-  echo "location: $diffdelocation" >> $rmlogfile
+  echo "Creating «$LOGFILE»"
+  touch "$LOGFILE"
+  chmod 664 $LOGFILE -v
 fi
+echo "At $TIMESTAMP remove duplicate $extension files" >> $LOGFILE
+echo "Folder $LOCATION with depth of $DEPTHVAR:" >> $LOGFILE
 #
 # sort by depth, removes deeper files
 #wildcard expands where it is refered
-#find "$diffdelocation" -mindepth 1 -maxdepth 1 -type f -and -iname [!.]\*[.]$extension > $diffdelocation/.diffdelog.txt
-k=$diffdeldepth
+#find "$LOCATION" -mindepth 1 -maxdepth 1 -type f -and -iname [!.]\*[.]$extension > $TEMPLOGFILE
+k=$DEPTHVAR
 for (( j=0; j<=k ; j++ ))
 do
-  find $diffdelocation -mindepth $j -maxdepth $j -iname [!.]\*[.]$extension -type f >> $diffdelocation/.diffdelog.txt
+  find $LOCATION -mindepth $j -maxdepth $j -iname [!.]\*[.]$extension -type f >> $TEMPLOGFILE
 done
 #Interrupt catch (control_c function jump)
 trap control_c SIGINT
@@ -101,9 +137,9 @@ echo "CYCLE START"
 tmp="Ignition"
 while [[ -n "$tmp" ]];
 do
-  line="$(head -1 $diffdelocation/.diffdelog.txt)"
-  tmp=$(grep -vF "$line" $diffdelocation/.diffdelog.txt) #-F
-  echo "$tmp" > $diffdelocation/.diffdelog.txt #faster
+  line="$(head -1 $TEMPLOGFILE)"
+  tmp=$(grep -vF "$line" $TEMPLOGFILE) #-F
+  echo "$tmp" > $TEMPLOGFILE #faster
   #
   printf "Comparator:\t«%s»\n" $line
   if [[ -n "$line" ]];
@@ -120,17 +156,17 @@ do
         then
           #
           rm "$nextline" -v
-          echo "Removed:«$nextline» place:«$line»" >> $rmlogfile
-          tmp=$(grep -vF "$nextline" $diffdelocation/.diffdelog.txt) #-F
-          echo "$tmp" > $diffdelocation/.diffdelog.txt
+          echo "Removed:«$nextline» place:«$line»" >> $LOGFILE
+          tmp=$(grep -vF "$nextline" $TEMPLOGFILE) #-F
+          echo "$tmp" > $TEMPLOGFILE
         else
           echo "Files are different"
           continue
         fi
       else # $nextline does not exist
         echo "Does not exist «$nextline»"
-        tmp=$(grep -vF "$nextline" $diffdelocation/.diffdelog.txt) #-F
-        echo "$tmp" > $diffdelocation/.diffdelog.txt
+        tmp=$(grep -vF "$nextline" $TEMPLOGFILE) #-F
+        echo "$tmp" > $TEMPLOGFILE
         continue
       fi
     done
@@ -139,13 +175,13 @@ do
   fi
 done
 echo "CYCLE END"
-timestamp=$(date +%Y:%m:%d-%H:%M:%S)
+TIMESTAMP=$(date +%Y:%m:%d-%H:%M:%S)
 #troubleshooting
-rm $diffdelocation/.diffdelog.txt -v
+rm $TEMPLOGFILE -v
 #
-echo "$timestamp finished" >> $rmlogfile
-chmod 444 $rmlogfile -v
-echo "Ficheiro «$rmlogfile» finished"
+echo "$TIMESTAMP finished" >> $LOGFILE
+chmod 444 $LOGFILE -v
+echo "Ficheiro «$LOGFILE» finished"
 #Cleanup
 IFS=$IFS_OLD
 exit #all is well
