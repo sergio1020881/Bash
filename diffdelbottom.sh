@@ -12,7 +12,13 @@ then
   printf "$SCRIPT please run this script with the BASH shell"
   exit 192
 fi
-echo "--------------------------------------------------------------------------------"
+colorred="tput setaf 1"
+colorgreen="tput setaf 2"
+colorreset="tput sgr0"
+RED=1
+GREEN=2
+colorreset="tput sgr0"
+echo "$($colorgreen)-------------------------------------------------------------------------- $($colorreset)"
 #preset
 IFS_OLD=$IFS
 #IFS metacharacter list.
@@ -25,7 +31,7 @@ control_c()
   #troubleshooting
   rm $LOCATION/.diffdelog.txt -v
   #
-  echo "Stopped due to Interrupt «ctr-c»"
+  echo "$(tput setaf $GREEN)Stopped due to Interrupt «ctr-c» $(tput sgr0)"
   echo "$TIMESTAMP stopped" >> "$LOGFILE"
   chmod 444 "$LOGFILE" -v
   #Cleanup
@@ -37,7 +43,8 @@ control_c()
 DIRVAR=NULL
 TERMDIR=NULL
 TIMESTAMP=$(date +%Y:%m:%d-%H:%M:%S)
-echo "INICIO $TIMESTAMP"
+echo "$(tput setaf $GREEN)INICIO $TIMESTAMP $(tput sgr0)"
+echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
 #filter
 if (( $# < 3 || $# > 3 )); 
 then
@@ -105,7 +112,7 @@ LOGFILE="$LOGFOLDER/remove_$extension.txt"
 #testes
 if [[ -d $LOGFOLDER ]];
 then
-  echo "Updating «$LOGFOLDER»"
+  echo -n ""
 else
   echo "Creating «$LOGFOLDER»"
   mkdir $LOGFOLDER -v
@@ -119,6 +126,8 @@ else
   touch "$LOGFILE"
   chmod 664 $LOGFILE -v
 fi
+echo "$(tput setaf $RED)At $TIMESTAMP remove duplicate $extension files $(tput sgr0)"
+echo "$(tput setaf $RED)Folder $LOCATION with depth of $DEPTHVAR: $(tput sgr0)"
 echo "At $TIMESTAMP remove duplicate $extension files" >> $LOGFILE
 echo "Folder $LOCATION with depth of $DEPTHVAR:" >> $LOGFILE
 #
@@ -181,7 +190,7 @@ rm $TEMPLOGFILE -v
 #
 echo "$TIMESTAMP finished" >> $LOGFILE
 chmod 444 $LOGFILE -v
-echo "Ficheiro «$LOGFILE» finished"
+echo "$(tput setaf $GREEN)Ficheiro «$LOGFILE» finished $(tput sgr0)"
 #Cleanup
 IFS=$IFS_OLD
 exit #all is well
