@@ -3,6 +3,8 @@
 #sergio.salazar.santos@gmail.com
 #mobile: 916919898
 #CVS: $Header$
+#help improving is always welcome
+#####################################################################
 shopt -s -o nounset
 #Global declaraions
 declare -rx SCRIPT=${0##*/}
@@ -12,13 +14,9 @@ then
   printf "$SCRIPT please run this script with the BASH shell"
   exit 192
 fi
-colorred="tput setaf 1"
-colorgreen="tput setaf 2"
-colorreset="tput sgr0"
 RED=1
 GREEN=2
-colorreset="tput sgr0"
-echo "$($colorgreen)-------------------------------------------------------------------------- $($colorreset)"
+echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
 #preset
 IFS_OLD=$IFS
 #IFS metacharacter list.
@@ -48,15 +46,16 @@ echo "$(tput setaf $GREEN)------------------------------------------------------
 #filter
 if (( $# < 3 || $# > 3 )); 
 then
-  echo "Usage: $0 FOLDER FILE depth"
+  echo "Usage: $0 LOCATION EXTENSION DEPTH"
+  echo "PARAMETER MISSING !!!"
   exit
 else
   echo "Entry: $0 $1 $2 $3"
 fi
-#it is always better to make a program that only does the tasks predefined, those not recognised
-#is to be ignored, this way there is no gaps for errors, only what is expected, otherwise ignored.
-#One way is to compare inputs with the ones predefined, only accept and react to those that are #defined.
+#it is always better to make a program that only does the tasks pre-defined, those that are not recognised are to be ignored, this way there is no gaps for errors, only what is expected, otherwise ignore.
+#One way is to compare the input with the one pre-defined or established and only reat to them, others are ignored.
 #Pre-requisites for an input to be accepted, it has to go threw a filtering mode.
+###USAGE###
 #example: diffdel.sh . txt 3
 #example: diffdel.sh ~ pdf 6
 #INIC VAR
@@ -128,8 +127,10 @@ else
 fi
 echo "$(tput setaf $RED)At $TIMESTAMP remove duplicate $extension files $(tput sgr0)"
 echo "$(tput setaf $RED)Folder $LOCATION with depth of $DEPTHVAR: $(tput sgr0)"
+echo "--------------------------------------------------------------------------------" >> $LOGFILE
 echo "At $TIMESTAMP remove duplicate $extension files" >> $LOGFILE
 echo "Folder $LOCATION with depth of $DEPTHVAR:" >> $LOGFILE
+echo "--------------------------------------------------------------------------------" >> $LOGFILE
 #
 # sort by depth, removes deeper files
 #wildcard expands where it is refered
@@ -150,7 +151,8 @@ do
   tmp=$(grep -vF "$line" $TEMPLOGFILE) #-F
   echo "$tmp" > $TEMPLOGFILE #faster
   #
-  printf "Comparator:\t«%s»\n" $line
+  printf "Comparator: «%s»\n" $line
+  echo "Search duplicate of $line:" >> $LOGFILE
   if [[ -n "$line" ]];
   then
     echo "$tmp" |
@@ -158,29 +160,29 @@ do
     do
       if [[ -f "$nextline" ]];
       then
-        echo "Compare:«$line»	with:«$nextline»"
+        echo -n "-> «$nextline»"
         charcount=$(diff -N "$line" "$nextline" | wc -c) #-N if not exist treat as empty file
-        echo "Count $charcount"
+        echo " Count $charcount"
         if [[ $charcount -eq 0 ]] && [[ -f "$line" ]] && [[ -f "$nextline" ]]; #safety
         then
           #
-          rm "$nextline" -v
-          echo "Removed:«$nextline» place:«$line»" >> $LOGFILE
+          rm "$nextline" -v >> $LOGFILE
+          echo "Removed"
           tmp=$(grep -vF "$nextline" $TEMPLOGFILE) #-F
           echo "$tmp" > $TEMPLOGFILE
         else
-          echo "Files are different"
+          echo "Stays"
           continue
         fi
-      else # $nextline does not exist
-        echo "Does not exist «$nextline»"
+      else # $nextline does not exist, suppose to never happen never the less.
+        echo "TARGET EMPTY"
         tmp=$(grep -vF "$nextline" $TEMPLOGFILE) #-F
         echo "$tmp" > $TEMPLOGFILE
         continue
       fi
     done
   else # $line does not exist
-    echo "Has already been removed"
+    echo "SOURCE EMPTY"
   fi
 done
 echo "CYCLE END"
