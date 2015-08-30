@@ -159,7 +159,9 @@ do
   echo "$tmp" > $TEMPLOGFILE #faster
   #
   printf "Comparator: «%s»\n" $line
+  echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
   echo "Search duplicate of $line:" >> $LOGFILE
+  echo "-------------------------------------------------------------------------- " >> $LOGFILE
   if [[ -n "$line" ]];
   then
     echo "$tmp" | while read -r nextline;
