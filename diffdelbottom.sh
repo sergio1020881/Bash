@@ -151,7 +151,7 @@ read -p "Press [Enter] key to start"
 #Interrupt catch (control_c function jump)
 #
 echo "CYCLE START"
-tmp=$(cat $TEMPLOGFILE)
+tmp=$(grep -F $extension $TEMPLOGFILE)
 echo "$tmp" | while read -r line;
 do
   #line="$(head -1 $TEMPLOGFILE)"
