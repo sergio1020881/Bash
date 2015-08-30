@@ -126,6 +126,7 @@ else
   touch "$LOGFILE"
   chmod 664 $LOGFILE -v
 fi
+trap control_c SIGINT
 #QUANT=$(ls -R | egrep [!.]\*[.]$extension$ | wc -l)
 echo "$(tput setaf $RED)At $TIMESTAMP remove duplicate $extension files $(tput sgr0)"
 echo "$(tput setaf $RED)Folder $LOCATION with depth of $DEPTHVAR: $(tput sgr0)"
@@ -148,7 +149,6 @@ QUANT=$(wc -l $TEMPLOGFILE)
 echo "Total Number of Files: $QUANT"
 read -p "Press [Enter] key to start"
 #Interrupt catch (control_c function jump)
-trap control_c SIGINT
 #
 echo "CYCLE START"
 tmp="Ignition"
