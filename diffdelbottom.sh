@@ -126,23 +126,27 @@ else
   touch "$LOGFILE"
   chmod 664 $LOGFILE -v
 fi
-QUANT=$(ls -R | egrep [!.]\*[.]$extension$ | wc -l)
+#QUANT=$(ls -R | egrep [!.]\*[.]$extension$ | wc -l)
 echo "$(tput setaf $RED)At $TIMESTAMP remove duplicate $extension files $(tput sgr0)"
 echo "$(tput setaf $RED)Folder $LOCATION with depth of $DEPTHVAR: $(tput sgr0)"
 echo "--------------------------------------------------------------------------------" >> $LOGFILE
 echo "At $TIMESTAMP remove duplicate $extension files" >> $LOGFILE
 echo "Folder $LOCATION with depth of $DEPTHVAR" >> $LOGFILE
-echo "Total Number of Files: $QUANT"
 echo "--------------------------------------------------------------------------------" >> $LOGFILE
+
 #ls -R | egrep [!.]\*[.]pdf$ | wc -l
 # sort by depth, removes deeper files
 #wildcard expands where it is refered
 #find "$LOCATION" -mindepth 1 -maxdepth 1 -type f -and -iname [!.]\*[.]$extension > $TEMPLOGFILE
+j=1
 k=$DEPTHVAR
-for (( j=0; j<=k ; j++ ))
+for (( j=1; j<=k ; j++ ))
 do
   find $LOCATION -mindepth $j -maxdepth $j -iname [!.]\*[.]$extension -type f >> $TEMPLOGFILE
 done
+QUANT=$(wc -l $TEMPLOGFILE)
+echo "Total Number of Files: $QUANT"
+read -p "Press [Enter] key to start"
 #Interrupt catch (control_c function jump)
 trap control_c SIGINT
 #
@@ -177,7 +181,7 @@ do
           echo "Stays"
           continue
         fi
-      else # $nextline does not exist, suppose to never happen never the less.
+      else # $nextline does not exist
         echo "TARGET EMPTY"
         tmp=$(grep -vF "$nextline" $TEMPLOGFILE) #-F
         echo "$tmp" > $TEMPLOGFILE
