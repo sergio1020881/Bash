@@ -202,7 +202,3 @@ echo "$(tput setaf $GREEN)Ficheiro «$LOGFILE» finished $(tput sgr0)"
 #Cleanup
 IFS=$IFS_OLD
 exit #all is well
-
-    Status API Training Shop Blog About Pricing 
-
-    © 2015 GitHub, Inc. Terms Privacy 
