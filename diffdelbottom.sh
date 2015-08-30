@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 #author: sergio manuel salazar dos santos
 #sergio.salazar.santos@gmail.com
 #mobile: 916919898
@@ -151,10 +151,10 @@ read -p "Press [Enter] key to start"
 #Interrupt catch (control_c function jump)
 #
 echo "CYCLE START"
-tmp="Ignition"
-while [[ -n "$tmp" ]];
+tmp=$(cat $TEMPLOGFILE)
+echo "$tmp" | while read -r line;
 do
-  line="$(head -1 $TEMPLOGFILE)"
+  #line="$(head -1 $TEMPLOGFILE)"
   tmp=$(grep -vF "$line" $TEMPLOGFILE) #-F
   echo "$tmp" > $TEMPLOGFILE #faster
   #
@@ -162,8 +162,7 @@ do
   echo "Search duplicate of $line:" >> $LOGFILE
   if [[ -n "$line" ]];
   then
-    echo "$tmp" |
-    while read -r nextline;
+    echo "$tmp" | while read -r nextline;
     do
       if [[ -f "$nextline" ]];
       then
@@ -203,3 +202,7 @@ echo "$(tput setaf $GREEN)Ficheiro «$LOGFILE» finished $(tput sgr0)"
 #Cleanup
 IFS=$IFS_OLD
 exit #all is well
+
+    Status API Training Shop Blog About Pricing 
+
+    © 2015 GitHub, Inc. Terms Privacy 
