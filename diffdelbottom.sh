@@ -162,6 +162,7 @@ do
   echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
   echo "Search duplicate of $line:" >> $LOGFILE
   echo "-------------------------------------------------------------------------- " >> $LOGFILE
+  sleep 5
   if [[ -n "$line" ]];
   then
     echo "$tmp" | while read -r nextline;
