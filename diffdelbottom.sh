@@ -16,6 +16,7 @@ then
 fi
 RED=1
 GREEN=2
+QUANT=0
 echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
 #preset
 IFS_OLD=$IFS
@@ -125,13 +126,15 @@ else
   touch "$LOGFILE"
   chmod 664 $LOGFILE -v
 fi
+QUANT=$(ls -R | egrep [!.]\*[.]$extension$ | wc -l)
 echo "$(tput setaf $RED)At $TIMESTAMP remove duplicate $extension files $(tput sgr0)"
 echo "$(tput setaf $RED)Folder $LOCATION with depth of $DEPTHVAR: $(tput sgr0)"
 echo "--------------------------------------------------------------------------------" >> $LOGFILE
 echo "At $TIMESTAMP remove duplicate $extension files" >> $LOGFILE
-echo "Folder $LOCATION with depth of $DEPTHVAR:" >> $LOGFILE
+echo "Folder $LOCATION with depth of $DEPTHVAR" >> $LOGFILE
+echo "Total Number of Files: $QUANT"
 echo "--------------------------------------------------------------------------------" >> $LOGFILE
-#
+#ls -R | egrep [!.]\*[.]pdf$ | wc -l
 # sort by depth, removes deeper files
 #wildcard expands where it is refered
 #find "$LOCATION" -mindepth 1 -maxdepth 1 -type f -and -iname [!.]\*[.]$extension > $TEMPLOGFILE
