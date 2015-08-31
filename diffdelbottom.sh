@@ -136,7 +136,7 @@ for (( j=1; j<=k ; j++ ))
 do
 	find $LOCATION -mindepth $j -maxdepth $j -iname [!.]\*[.]$extension -type f >> $TEMPLOGFILE
 done
-QUANT=$(wc -l $TEMPLOGFILE | grep -o "[0-9]")
+QUANT=$(wc -l $TEMPLOGFILE | grep -o "[0-9]*")
 echo "TOTAL $QUANT"
 read -p "Press [Enter] key to start"
 #
@@ -150,7 +150,7 @@ do
 		#line="$(head -1 $TEMPLOGFILE)"
 		tmp=$(grep -vF "$line" $TEMPLOGFILE) #-F
 		echo "$tmp" > $TEMPLOGFILE #faster
-		QUANT=$(wc -l $TEMPLOGFILE | grep -o "[0-9]")
+		QUANT=$(wc -l $TEMPLOGFILE | grep -o "[0-9]*")
 		#
 		echo "Compare «$line» with «$QUANT» file:"
 		echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
