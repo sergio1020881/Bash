@@ -202,3 +202,6 @@ echo "$(tput setaf $GREEN)Ficheiro «$LOGFILE» finished $(tput sgr0)"
 #Cleanup
 IFS=$IFS_OLD
 exit #all is well
+##########################################################################################################
+###############DIR="./PDFALL";mkdir -pv $DIR;find . -iname "*.pdf" -type f -print0 | xargs -0 mv -ut $DIR
+##########################################################################################################
