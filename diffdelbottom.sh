@@ -16,8 +16,6 @@ then
 fi
 RED=1
 GREEN=2
-QUANT=0
-EXITFLAG=0
 echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
 #preset
 IFS_OLD=$IFS
@@ -40,8 +38,6 @@ control_c()
 }
 #The main
 #GLOBAL VAR
-DIRVAR=NULL
-TERMDIR=NULL
 TIMESTAMP=$(date +%Y:%m:%d-%H:%M:%S)
 echo "$(tput setaf $GREEN)INICIO $TIMESTAMP $(tput sgr0)"
 echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
@@ -54,12 +50,10 @@ then
 else
 	echo "Entry: $0 $1 $2 $3"
 fi
-#it is always better to make a program that only does the tasks pre-defined, those that are not recognised are to be ignored, this way there is no gaps for errors, only what is expected, otherwise ignore.
-#One way is to compare the input with the one pre-defined or established and only reat to them, others are ignored.
-#Pre-requisites for an input to be accepted, it has to go threw a filtering mode.
-###USAGE###
-#example: diffdel.sh . txt 3
-#example: diffdel.sh ~ pdf 6
+###################################USAGE#########################################
+#example: diffdel.sh . txt 3							#
+#example: diffdel.sh ~ pdf 6							#
+###################################USAGE#########################################
 #INIC VAR
 DIRVAR="$1"
 TERMDIR=$(pwd)
@@ -135,21 +129,16 @@ echo "--------------------------------------------------------------------------
 echo "At $TIMESTAMP remove duplicate $extension files" >> $LOGFILE
 echo "Folder $LOCATION with depth of $DEPTHVAR" >> $LOGFILE
 echo "--------------------------------------------------------------------------------" >> $LOGFILE
-
-#ls -R | egrep [!.]\*[.]pdf$ | wc -l
-# sort by depth, removes deeper files
-#wildcard expands where it is refered
-#find "$LOCATION" -mindepth 1 -maxdepth 1 -type f -and -iname [!.]\*[.]$extension > $TEMPLOGFILE
+#
 j=1
 k=$DEPTHVAR
 for (( j=1; j<=k ; j++ ))
 do
 	find $LOCATION -mindepth $j -maxdepth $j -iname [!.]\*[.]$extension -type f >> $TEMPLOGFILE
 done
-QUANT=$(wc -l $TEMPLOGFILE)
-echo "Total Number of Files: $QUANT"
+QUANT=$(wc -l $TEMPLOGFILE | grep -o "[0-9]")
+echo "TOTAL $QUANT"
 read -p "Press [Enter] key to start"
-#Interrupt catch (control_c function jump)
 #
 echo "CYCLE START"
 tmp="Ignition"
@@ -158,14 +147,14 @@ do
 	tmp=$(grep -F $extension $TEMPLOGFILE)
 	echo "$tmp" | while read -r line;
 	do
-		
 		#line="$(head -1 $TEMPLOGFILE)"
 		tmp=$(grep -vF "$line" $TEMPLOGFILE) #-F
 		echo "$tmp" > $TEMPLOGFILE #faster
+		QUANT=$(wc -l $TEMPLOGFILE | grep -o "[0-9]")
 		#
-		printf "Comparator: «%s»\n" $line
+		echo "Compare «$line» with «$QUANT» file:"
 		echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
-		echo "Search duplicate of $line:" >> $LOGFILE
+		echo "Search duplicate of $line from $QUANT files:" >> $LOGFILE
 		echo "-------------------------------------------------------------------------- " >> $LOGFILE
 		sleep 5
 		if [[ -n "$line" ]];
@@ -185,7 +174,6 @@ do
 						echo "Removed"
 						tmp=$(grep -vF "$nextline" $TEMPLOGFILE) #-F
 						echo "$tmp" > $TEMPLOGFILE
-						
 					else
 						echo "Stays"
 						continue
