@@ -39,8 +39,8 @@ TERMINALDIR=$(pwd)
 #example: run grep								#
 ###################################USAGE#########################################
 ARGS="$@"
-COMMAND=$1
-COUNT=$(ls /bin /sbin /usr/bin /usr/sbin | grep ^"$COMMAND"$ | wc -l)
+COMMAND="$1"
+COUNT=$(ls /bin /sbin /usr/bin /usr/sbin | grep ^$COMMAND$ | wc -l)
 if(( $COUNT ))
 then
 	$ARGS
