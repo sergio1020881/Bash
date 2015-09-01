@@ -42,7 +42,7 @@ then
 ###################################USAGE#########################################
 	ARGS="$@"
 	COMMAND="$1"
-	COUNT=$(ls /bin /sbin /usr/bin /usr/sbin | grep ^$COMMAND$ | wc -l)
+	COUNT=$(ls /bin /sbin /usr/bin /usr/sbin /usr/games | grep ^$COMMAND$ | wc -l)
 	if(( $COUNT ))
 	then
 		$ARGS
@@ -51,6 +51,9 @@ then
 	fi
 
 else
+	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
+	echo "$(tput setaf $RED)PIPPING$(tput sgr0)"
+	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 	while read data
 	do
 		echo $data
