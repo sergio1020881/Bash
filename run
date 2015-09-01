@@ -8,43 +8,52 @@
 shopt -s -o nounset
 #
 declare -rx SCRIPT=${0##*/}
-IFS_OLD=$IFS
 #
 if test -z "$BASH"; #-z
 then
 	printf "$SCRIPT please run this script with the BASH shell"
 	exit 192
 fi
+#####################################################################
 RED=1
 GREEN=2
-echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 control_c()
 {
 	exit #all is well
 }
-if (( $# )); 
+if [ -t 0 ]
 then
-	echo "$(tput setaf $RED)$0 $@$(tput sgr0)"
-echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
-else
-	echo "Usage: $(tput setaf $RED)$0 exe$(tput sgr0)"
-	echo "ARGUMENTS MISSING !!!"
-echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
-	exit
-fi
-trap control_c SIGINT
-TERMINALDIR=$(pwd)
+	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
+	if (( $# )); 
+	then
+		echo "$(tput setaf $RED)$0 $@$(tput sgr0)"
+		echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
+	else
+		echo "Usage: $(tput setaf $RED)$0 exe ......$(tput sgr0)"
+		echo "ARGUMENTS MISSING !!!"
+		echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
+		exit
+	fi
+	trap control_c SIGINT
+	TERMINALDIR=$(pwd)
 ###################################USAGE#########################################
 #example: run mame								#
-#example: run grep								#
+#example: run gedit								#
 ###################################USAGE#########################################
-ARGS="$@"
-COMMAND="$1"
-COUNT=$(ls /bin /sbin /usr/bin /usr/sbin | grep ^$COMMAND$ | wc -l)
-if(( $COUNT ))
-then
-	$ARGS
+	ARGS="$@"
+	COMMAND="$1"
+	COUNT=$(ls /bin /sbin /usr/bin /usr/sbin | grep ^$COMMAND$ | wc -l)
+	if(( $COUNT ))
+	then
+		$ARGS
+	else
+		./$ARGS
+	fi
+
 else
-	./$ARGS
+	while read data
+	do
+		echo $data
+	done
 fi
 exit #all is well
