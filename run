@@ -26,7 +26,7 @@ then
 	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 	if (( $# )); 
 	then
-		echo "$(tput setaf $RED)$0 $@$(tput sgr0)"
+		echo "$(tput setaf $RED)$0 -> $@ -> $#(tput sgr0)"
 		echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 	else
 		echo "Usage: $(tput setaf $RED)$0 exe ......$(tput sgr0)"
@@ -45,11 +45,48 @@ then
 	COUNT=$(ls /bin /sbin /usr/bin /usr/sbin /usr/games | grep ^$COMMAND$ | wc -l)
 	if(( $COUNT ))
 	then
-		$ARGS
-	else
-		./$ARGS
-	fi
+		case "$#" in
 
+		1)	$COMMAND
+    			;;
+		2)	$COMMAND "$2"
+    			;;
+		3)	$COMMAND "$2" "$3"
+    			;;
+		4)	$COMMAND "$2" "$3" "$4"
+   			;;
+		5)	./$COMMAND "$2" "$3" "$4" "$5"
+   			;;
+		6)	./$COMMAND "$2" "$3" "$4" "$5" "$6"
+   			;;
+		7)	./$COMMAND "$2" "$3" "$4" "$5" "$6" "$7"
+   			;;
+		*)	echo "To many arguments not supported"
+   			;;
+		esac
+#		$ARGS
+	else
+		case "$#" in
+
+		1)	./$COMMAND
+    			;;
+		2)	./$COMMAND "$2"
+    			;;
+		3)	./$COMMAND "$2" "$3"
+    			;;
+		4)	./$COMMAND "$2" "$3" "$4"
+   			;;
+		5)	./$COMMAND "$2" "$3" "$4" "$5"
+   			;;
+		6)	./$COMMAND "$2" "$3" "$4" "$5" "$6"
+   			;;
+		7)	./$COMMAND "$2" "$3" "$4" "$5" "$6" "$7"
+   			;;
+		*)	echo "To many arguments not supported"
+   			;;
+		esac
+#		./$ARGS
+	fi
 else
 	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 	echo "$(tput setaf $RED)PIPPING$(tput sgr0)"
