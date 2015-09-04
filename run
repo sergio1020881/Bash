@@ -21,6 +21,7 @@ RED=1
 GREEN=2
 control_c()
 {
+	echo "$(tput setaf $RED)Stopped due to Interrup Ctrl+C$(tput sgr0)"
 	IFS="$OLD_IFS"
 	exit #all is well
 }
