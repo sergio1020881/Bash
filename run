@@ -24,6 +24,7 @@ control_c()
 	IFS="$OLD_IFS"
 	exit #all is well
 }
+trap control_c SIGINT
 if [ -t 0 ]
 then
 	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
@@ -37,7 +38,6 @@ then
 		echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 		exit
 	fi
-	trap control_c SIGINT
 	TERMINALDIR=$(pwd)
 ###################################USAGE#########################################
 #example: run mame								#
