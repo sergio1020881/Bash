@@ -14,11 +14,14 @@ then
 	printf "$SCRIPT please run this script with the BASH shell"
 	exit 192
 fi
+OLD_IFS="$IFS"
+IFS=$'\0'
 #####################################################################
 RED=1
 GREEN=2
 control_c()
 {
+	IFS="$OLD_IFS"
 	exit #all is well
 }
 if [ -t 0 ]
@@ -43,6 +46,7 @@ then
 	ARGS="$@"
 	COMMAND="$1"
 	COUNT=$(ls /bin /sbin /usr/bin /usr/sbin /usr/games | grep ^$COMMAND$ | wc -l)
+	#echo "-$COUNT-"
 	if(( $COUNT ))
 	then
 		case "$#" in
@@ -64,7 +68,6 @@ then
 		*)	echo "To many arguments not supported"
    			;;
 		esac
-#		$ARGS
 	else
 		case "$#" in
 
@@ -85,15 +88,16 @@ then
 		*)	echo "To many arguments not supported"
    			;;
 		esac
-#		./$ARGS
 	fi
+	IFS="$OLD_IFS"
 else
 	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 	echo "$(tput setaf $RED)PIPPING$(tput sgr0)"
 	echo "$(tput setaf $RED)---------------------------------------$(tput sgr0)"
 	while read data
 	do
-		echo $data
+		echo "$data"
 	done
+	IFS="$OLD_IFS"
 fi
 exit #all is well
