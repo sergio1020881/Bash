@@ -18,7 +18,7 @@ fi
 RED=1
 GREEN=2
 declare -a EXTENSIONLIB
-EXTENSIONLIB=(asm bmp brd c cpp dll doc docx epub exe gif gz h ini ino jpg jsp mp3 msi ods odt pdb pde pdf png pps ppt ps rar sch sh spq svg txt vsd wxm xls xlsx xps zip)
+EXTENSIONLIB=(asm bmp brd c cpp dll doc docx epub exe gif gz h ini ino jpg jsp mp3 msi ods odt pdb pde pdf png pps ppt ps rar sch sh spq svg txt vsd wxm xls xlsx xps zip pdn iso)
 echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
 #preset
 IFS_OLD="$IFS"
@@ -30,6 +30,7 @@ control_c()
 	IFS=$IFS_OLD
 	exit #all is well
 }
+trap control_c SIGINT
 TIMESTAMP=$(date +%Y:%m:%d-%H:%M:%S)
 echo "$(tput setaf $GREEN)INICIO $TIMESTAMP $(tput sgr0)"
 echo "$(tput setaf $GREEN)-------------------------------------------------------------------------- $(tput sgr0)"
@@ -43,8 +44,8 @@ else
 	echo "Entry: $0 $1 $2"
 fi
 ###################################USAGE#########################################
-#example: backup.sh . txt ~							#
-#example: backup.sh ~ pdf /media/workspace/Hard Disk/				#
+#example: backup.sh . ~							#
+#example: backup.sh ~ "/media/workspace/Hard Disk"				#
 ###################################USAGE#########################################
 #INIC VAR
 TERMDIR=$(pwd)
@@ -99,8 +100,6 @@ then
 else
 	echo " Confirmed «$FOLDER»"
 fi
-##
-trap control_c SIGINT
 ##
 echo "-----BACKUP-----"
 echo "Source $SOURCE"
