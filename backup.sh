@@ -41,7 +41,7 @@ else
 fi
 ###################################USAGE#########################################
 #example: backup.sh . txt ~							#
-#example: backup.sh ~ pdf /media/workspace/Hard Disk/				#
+#example: backup.sh ~ pdf "/media/workspace/Hard Disk"				#
 ###################################USAGE#########################################
 #INIC VAR
 TERMDIR=$(pwd)
