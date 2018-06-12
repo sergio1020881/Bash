@@ -15,7 +15,7 @@ fi
 #preset
 IFS_OLD=$IFS
 #IFS metacharacter list.
-#very impotante this parameter
+#very importante this parameter
 IFS=$'\0'
 #function exit on interrupt catch
 control_c()
@@ -24,7 +24,7 @@ control_c()
   #troubleshooting
   rm $diffdelocation/.diffdelog.txt -v
   #
-  echo "Stopped due to Interrupt Â«ctr-cÂ»"
+  echo "Stopped due to Interrupt «ctr-c»"
   echo "$timestamp stopped" >> "$rmlogfile"
   chmod 444 "$rmlogfile" -v
   #Cleanup
@@ -46,7 +46,7 @@ diffdelocation="$1";
 #
 if [[ ! -d $diffdelocation ]];
 then
-  echo "Dir Â«$diffdelocationÂ» does not exist!"
+  echo "Dir «$diffdelocation» does not exist!"
   exit
 fi
 #
@@ -68,18 +68,18 @@ rmlogfile="$rmlogfolder/remove_$extension.txt"
 #testes
 if [[ -d $rmlogfolder ]];
 then
-  echo "Pasta Â«$rmlogfolderÂ» updated"
+  echo "Pasta «$rmlogfolder» updated"
 else
   mkdir $rmlogfolder -v
 fi
 if [[ -f $rmlogfile ]];
 then
-  echo "Ficheiro Â«$rmlogfileÂ» updated"
+  echo "Ficheiro «$rmlogfile» updated"
   chmod 777 $rmlogfile -v
   echo "$timestamp remove $extension files:" >> $rmlogfile
   echo "location: $diffdelocation" >> $rmlogfile
 else
-  echo "Ficheiro Â«$rmlogfileÂ» created"
+  echo "Ficheiro «$rmlogfile» created"
   touch "$rmlogfile"
   chmod 777 $rmlogfile -v
   echo "$timestamp remove $extension files:" > $rmlogfile
@@ -105,7 +105,7 @@ do
   tmp=$(grep -vF "$line" $diffdelocation/.diffdelog.txt) #-F
   echo "$tmp" > $diffdelocation/.diffdelog.txt #faster
   #
-  printf "Comparator:\tÂ«%sÂ»\n" $line
+  printf "Comparator:\t«%s»\n" $line
   if [[ -n "$line" ]];
   then
     echo "$tmp" |
@@ -113,14 +113,14 @@ do
     do
       if [[ -f "$nextline" ]];
       then
-        echo "Compare:Â«$lineÂ»	with:Â«$nextlineÂ»"
+        echo "Compare:«$line»	with:«$nextline»"
         charcount=$(diff -N "$line" "$nextline" | wc -c) #-N if not exist treat as empty file
         echo "Count $charcount"
         if [[ $charcount -eq 0 ]] && [[ -f "$line" ]] && [[ -f "$nextline" ]]; #safety
         then
           #
           rm "$nextline" -v
-          echo "Removed:Â«$nextlineÂ» place:Â«$lineÂ»" >> $rmlogfile
+          echo "Removed:«$nextline» place:«$line»" >> $rmlogfile
           tmp=$(grep -vF "$nextline" $diffdelocation/.diffdelog.txt) #-F
           echo "$tmp" > $diffdelocation/.diffdelog.txt
         else
@@ -128,7 +128,7 @@ do
           continue
         fi
       else # $nextline does not exist
-        echo "Does not exist Â«$nextlineÂ»"
+        echo "Does not exist «$nextline»"
         tmp=$(grep -vF "$nextline" $diffdelocation/.diffdelog.txt) #-F
         echo "$tmp" > $diffdelocation/.diffdelog.txt
         continue
@@ -145,7 +145,7 @@ rm $diffdelocation/.diffdelog.txt -v
 #
 echo "$timestamp finished" >> $rmlogfile
 chmod 444 $rmlogfile -v
-echo "Ficheiro Â«$rmlogfileÂ» finished"
+echo "Ficheiro «$rmlogfile» finished"
 #Cleanup
 IFS=$IFS_OLD
 exit #all is well
