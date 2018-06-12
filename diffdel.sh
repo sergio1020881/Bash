@@ -150,3 +150,4 @@ echo "Ficheiro «$rmlogfile» finished"
 #Cleanup
 IFS=$IFS_OLD
 exit #all is well
+
